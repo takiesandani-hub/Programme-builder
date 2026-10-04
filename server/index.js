@@ -16,8 +16,10 @@ if (isProduction && !process.env.SESSION_SECRET) {
   throw new Error('SESSION_SECRET must be set in production.');
 }
 
-fs.mkdirSync(DATA_DIR, { recursive: true });
-fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+if (!isNetlify) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
