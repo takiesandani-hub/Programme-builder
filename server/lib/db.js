@@ -12,16 +12,17 @@ const requestCollections = new AsyncLocalStorage();
 
 const writeQueues = new Map();
 
-function getBlobsStore() {
+async function getBlobsStore() {
   if (!NETLIFY_MODE) throw new Error('Netlify Blobs is only available in a Netlify runtime.');
   return require('./blob-store').getNetlifyStore('scanprogram-data');
 }
 
 async function loadBlobCollection(name) {
   const prefix = `collections/${name}/`;
-  const { blobs } = await getBlobsStore().list({ prefix });
+  const store = await getBlobsStore();
+  const { blobs } = await store.list({ prefix });
   const items = await Promise.all(blobs.map((blob) =>
-    getBlobsStore().get(blob.key, { type: 'json', consistency: 'strong' })
+    store.get(blob.key, { type: 'json', consistency: 'strong' })
   ));
   return { items: items.filter(Boolean) };
 }
@@ -79,6 +80,7 @@ function update(name, mutator) {
         throw new Error(`Collection "${name}" was updated outside a Netlify request context.`);
       }
       const loaded = await loadBlobCollection(name);
+      const store = await getBlobsStore();
       const previous = new Map(loaded.items.map((item) => [item.id, item]));
       const items = loaded.items.map((item) => JSON.parse(JSON.stringify(item)));
       const result = await mutator(items);
@@ -86,11 +88,11 @@ function update(name, mutator) {
       const writes = [];
       for (const [id, item] of next) {
         if (!previous.has(id) || JSON.stringify(previous.get(id)) !== JSON.stringify(item)) {
-          writes.push(getBlobsStore().setJSON(`collections/${name}/${encodeURIComponent(id)}`, item));
+          writes.push(store.setJSON(`collections/${name}/${encodeURIComponent(id)}`, item));
         }
       }
       for (const id of previous.keys()) {
-        if (!next.has(id)) writes.push(getBlobsStore().delete(`collections/${name}/${encodeURIComponent(id)}`));
+        if (!next.has(id)) writes.push(store.delete(`collections/${name}/${encodeURIComponent(id)}`));
       }
       await Promise.all(writes);
       collections.set(name, { items });

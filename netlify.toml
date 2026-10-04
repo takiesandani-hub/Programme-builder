@@ -4,7 +4,7 @@
   functions = "netlify/functions"
 
 [functions]
-  external_node_modules = ["express", "serverless-http", "@netlify/blobs"]
+  external_node_modules = ["express", "serverless-http"]
 
 [[redirects]]
   from = "/api/*"

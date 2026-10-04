@@ -86,8 +86,9 @@ class LocalBlobStore {
 }
 
 const localStores = new Map();
+let netlifyBlobsModule;
 
-function getNetlifyStore(name) {
+async function getNetlifyStore(name) {
   if (process.env.NETLIFY_BLOBS_LOCAL_DIR) {
     if (!localStores.has(name)) {
       localStores.set(
@@ -97,7 +98,9 @@ function getNetlifyStore(name) {
     }
     return localStores.get(name);
   }
-  return require('@netlify/blobs').getStore(name, { consistency: 'strong' });
+  netlifyBlobsModule ||= import('@netlify/blobs');
+  const { getStore } = await netlifyBlobsModule;
+  return getStore(name, { consistency: 'strong' });
 }
 
 module.exports = { getNetlifyStore };

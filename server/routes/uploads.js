@@ -50,7 +50,8 @@ router.post('/', (req, res) => {
         const { getNetlifyStore } = require('../lib/blob-store');
         const buffer = req.file.buffer;
         const data = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
-        await getNetlifyStore('scanprogram-uploads').set(
+        const store = await getNetlifyStore('scanprogram-uploads');
+        await store.set(
           `${req.session.userId}/${filename}`,
           data,
           { metadata: { contentType: req.file.mimetype } }

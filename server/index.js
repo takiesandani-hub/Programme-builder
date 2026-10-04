@@ -49,10 +49,10 @@ else {
   app.get('/uploads/:ownerId/:filename', async (req, res) => {
     try {
       const { getNetlifyStore } = require('./lib/blob-store');
-      const blob = await getNetlifyStore('scanprogram-uploads')
-        .getWithMetadata(`${req.params.ownerId}/${req.params.filename}`, {
-          type: 'arrayBuffer',
-        });
+      const store = await getNetlifyStore('scanprogram-uploads');
+      const blob = await store.getWithMetadata(`${req.params.ownerId}/${req.params.filename}`, {
+        type: 'arrayBuffer',
+      });
       if (!blob) return res.status(404).end();
       res.set('Content-Type', blob.metadata.contentType || 'application/octet-stream');
       res.set('Cache-Control', 'public, max-age=31536000, immutable');
