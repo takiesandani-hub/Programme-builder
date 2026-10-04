@@ -101,8 +101,8 @@
         errorEl.textContent = 'Choose a JPEG, PNG, WEBP or GIF image.';
         return;
       }
-      if (file.size > 8 * 1024 * 1024) {
-        errorEl.textContent = 'This image is over 8 MB. Choose a smaller image.';
+      if (file.size > 4 * 1024 * 1024) {
+        errorEl.textContent = 'This image is over 4 MB. Choose a smaller image.';
         return;
       }
       createProgramme('upload', file);

@@ -1,10 +1,44 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { AsyncLocalStorage } = require('async_hooks');
 
-const DATA_DIR = path.join(__dirname, '..', '..', 'data');
+const DATA_DIR = path.resolve(
+  process.env.DATA_DIR || path.join(__dirname, '..', '..', 'data')
+);
+const NETLIFY_MODE = Boolean(process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const COLLECTIONS = ['users', 'programmes', 'guestScans'];
+const requestCollections = new AsyncLocalStorage();
 
 const writeQueues = new Map();
+
+function getBlobsStore() {
+  if (!NETLIFY_MODE) throw new Error('Netlify Blobs is only available in a Netlify runtime.');
+  return require('./blob-store').getNetlifyStore('scanprogram-data');
+}
+
+async function loadBlobCollection(name) {
+  const prefix = `collections/${name}/`;
+  const { blobs } = await getBlobsStore().list({ prefix });
+  const items = await Promise.all(blobs.map((blob) =>
+    getBlobsStore().get(blob.key, { type: 'json', consistency: 'strong' })
+  ));
+  return { items: items.filter(Boolean) };
+}
+
+async function loadRequestCollections(req, res, next) {
+  if (!NETLIFY_MODE) return next();
+  try {
+    const collections = new Map();
+    await Promise.all(COLLECTIONS.map(async (name) => {
+      collections.set(name, await loadBlobCollection(name));
+    }));
+    requestCollections.run(collections, () => next());
+  } catch (error) {
+    console.error('Could not load application data from Netlify Blobs.', error);
+    res.status(503).json({ error: 'Application data is temporarily unavailable. Please try again.' });
+  }
+}
 
 function queueWrite(file, task) {
   const prev = writeQueues.get(file) || Promise.resolve();
@@ -18,6 +52,13 @@ function filePath(name) {
 }
 
 function readCollection(name) {
+  if (NETLIFY_MODE) {
+    const collections = requestCollections.getStore();
+    if (!collections?.has(name)) {
+      throw new Error(`Collection "${name}" was read outside a Netlify request context.`);
+    }
+    return collections.get(name).items;
+  }
   const file = filePath(name);
   if (!fs.existsSync(file)) return [];
   const raw = fs.readFileSync(file, 'utf8').trim();
@@ -32,6 +73,29 @@ function writeCollectionSync(name, data) {
 
 function update(name, mutator) {
   return queueWrite(name, async () => {
+    if (NETLIFY_MODE) {
+      const collections = requestCollections.getStore();
+      if (!collections?.has(name)) {
+        throw new Error(`Collection "${name}" was updated outside a Netlify request context.`);
+      }
+      const loaded = await loadBlobCollection(name);
+      const previous = new Map(loaded.items.map((item) => [item.id, item]));
+      const items = loaded.items.map((item) => JSON.parse(JSON.stringify(item)));
+      const result = await mutator(items);
+      const next = new Map(items.map((item) => [item.id, item]));
+      const writes = [];
+      for (const [id, item] of next) {
+        if (!previous.has(id) || JSON.stringify(previous.get(id)) !== JSON.stringify(item)) {
+          writes.push(getBlobsStore().setJSON(`collections/${name}/${encodeURIComponent(id)}`, item));
+        }
+      }
+      for (const id of previous.keys()) {
+        if (!next.has(id)) writes.push(getBlobsStore().delete(`collections/${name}/${encodeURIComponent(id)}`));
+      }
+      await Promise.all(writes);
+      collections.set(name, { items });
+      return result;
+    }
     const items = readCollection(name);
     const result = await mutator(items);
     writeCollectionSync(name, items);
@@ -61,4 +125,14 @@ function uniqueSlug(existingSlugs, base) {
   return candidate;
 }
 
-module.exports = { readCollection, update, genId, slugify, uniqueSlug, DATA_DIR };
+module.exports = {
+  COLLECTIONS,
+  DATA_DIR,
+  getBlobsStore,
+  loadRequestCollections,
+  readCollection,
+  slugify,
+  uniqueSlug,
+  update,
+  genId,
+};

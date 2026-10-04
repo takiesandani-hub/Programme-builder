@@ -1,9 +1,7 @@
 const fs = require('fs');
-const path = require('path');
-const { readCollection, update, genId } = require('./lib/db');
+const { readCollection, update, genId, DATA_DIR } = require('./lib/db');
 const { hashPassword } = require('./lib/auth');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
 fs.mkdirSync(DATA_DIR, { recursive: true });
 
 async function seed() {
@@ -15,8 +13,12 @@ async function seed() {
     return;
   }
 
-  const email = 'admin@scanprogram.local';
-  const password = 'Admin123!';
+  const name = (process.env.ADMIN_NAME || '').trim();
+  const email = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD || '';
+  if (!name || !email || password.length < 12) {
+    throw new Error('Set ADMIN_NAME, ADMIN_EMAIL, and an ADMIN_PASSWORD of at least 12 characters.');
+  }
 
   await update('users', (items) => {
     items.push({
@@ -31,7 +33,9 @@ async function seed() {
 
   console.log('Admin account created:');
   console.log('  email:   ', email);
-  console.log('  password:', password);
 }
 
-seed();
+seed().catch((error) => {
+  console.error('Could not create admin account:', error.message);
+  process.exitCode = 1;
+});

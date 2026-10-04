@@ -1,0 +1,45 @@
+[build]
+  command = "npm run build:netlify"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  external_node_modules = ["express", "serverless-http", "@netlify/blobs"]
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/uploads/*"
+  to = "/.netlify/functions/api/uploads/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/healthz"
+  to = "/.netlify/functions/api/healthz"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/w/*"
+  to = "/w.html"
+  status = 200
+
+[[redirects]]
+  from = "/f/*"
+  to = "/f.html"
+  status = 200
+
+[[redirects]]
+  from = "/m/*"
+  to = "/m.html"
+  status = 200
+
+[[redirects]]
+  from = "/c/*"
+  to = "/c.html"
+  status = 200
