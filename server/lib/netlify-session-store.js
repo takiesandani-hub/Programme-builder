@@ -5,7 +5,10 @@ const { getNetlifyStore } = require('./blob-store');
 class NetlifySessionStore extends session.Store {
   constructor() {
     super();
-    this.store = getNetlifyStore('scanprogram-sessions');
+  }
+
+  getStore() {
+    return getNetlifyStore('scanprogram-sessions');
   }
 
   key(sessionId) {
@@ -13,11 +16,11 @@ class NetlifySessionStore extends session.Store {
   }
 
   get(sessionId, callback) {
-    this.store
+    this.getStore()
       .then((store) => store.get(this.key(sessionId), { type: 'json', consistency: 'strong' }))
       .then((data) => {
         if (data && data.expiresAt && data.expiresAt <= Date.now()) {
-          return this.store.then((store) => store.delete(this.key(sessionId)))
+          return this.getStore().then((store) => store.delete(this.key(sessionId)))
             .then(() => callback(null, null));
         }
         callback(null, data?.session || null);
@@ -29,14 +32,14 @@ class NetlifySessionStore extends session.Store {
     const expiresAt = sessionData.cookie?.expires
       ? new Date(sessionData.cookie.expires).getTime()
       : Date.now() + 7 * 24 * 60 * 60 * 1000;
-    this.store
+    this.getStore()
       .then((store) => store.setJSON(this.key(sessionId), { expiresAt, session: sessionData }))
       .then(() => callback(null))
       .catch(callback);
   }
 
   destroy(sessionId, callback = () => {}) {
-    this.store
+    this.getStore()
       .then((store) => store.delete(this.key(sessionId)))
       .then(() => callback(null))
       .catch(callback);
