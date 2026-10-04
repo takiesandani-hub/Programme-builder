@@ -44,7 +44,7 @@ The app now has a Netlify Functions adapter. Netlify serves the frontend pages a
 
 6. Remove `ADMIN_SETUP_TOKEN` from Netlify and redeploy immediately. The setup endpoint is disabled when this variable is absent. Then test sign-up/login, create and publish a programme, open its QR page, and check guest registrations in the admin dashboard.
 
-The frontend is copied into `dist/` by the build script. The Express API, dynamic programme pages and uploaded image URLs are routed through the Netlify function in `netlify.toml`. Netlify Functions have request-size and execution limits; uploads are therefore limited to 4 MB.
+The frontend is copied into `dist/` by the build script. The Express API, dynamic programme pages and uploaded image URLs are routed through the Netlify function in `netlify.toml`. Image responses are returned as binary data so uploaded artwork and generated QR codes retain their original bytes. Netlify Functions have request-size and execution limits; uploads are therefore limited to 4 MB.
 
 **Storage limitation:** Netlify Blobs is a key/value store, not a relational database. The configured API path provides strong reads, so recently written sessions, reset tokens and programmes can be read by the next request. Simultaneous edits to the same record can still overwrite each other (last-write-wins). Treat this setup as appropriate for a low-volume pilot; for important production guest records or concurrent users, use a transactional database or a storage service with conditional writes and backups.
 
