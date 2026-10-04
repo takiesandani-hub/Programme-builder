@@ -19,8 +19,14 @@ The app now has a Netlify Functions adapter. Netlify serves the frontend pages a
 
 1. In Netlify, choose **Add new site > Import an existing project**, connect the GitHub account that can access the repository, and select `programme-builder` on branch `main`.
 2. Netlify reads `netlify.toml`. Confirm the build command is `npm run build:netlify`, publish directory is `dist`, and functions directory is `netlify/functions`.
-3. In the site's environment variables, set `NODE_ENV` to `production` and `SESSION_SECRET` to a long random secret. Do not commit either secret to GitHub.
-4. Deploy the site. Netlify Blobs is used automatically by the function at runtime; its site-wide stores persist across deploys. Test `https://YOUR-SITE.netlify.app/healthz` and confirm it returns `{"status":"ok"}`.
+3. In the site's environment variables, set:
+   - `NODE_ENV` to `production`.
+   - `SESSION_SECRET` to a long random secret.
+   - `NETLIFY_BLOBS_SITE_ID` to the Site ID shown under **Project configuration > General > Project details**.
+   - `NETLIFY_BLOBS_TOKEN` to a Netlify personal access token with access to this site. Create it from your Netlify user settings under **Applications > Personal access tokens**. Keep it server-side and do not commit it.
+
+   The Blobs adapter uses the Netlify API with strong consistency. The site ID and token are required because Lambda-compatible functions do not expose the uncached Blobs endpoint needed for strong reads. `NETLIFY_BLOBS_API_URL` is optional and defaults to `https://api.netlify.com`.
+4. Deploy the site. Netlify Blobs is used automatically by the function at runtime; its site-wide stores persist across deploys. The `/healthz` check verifies the function can access persistent storage. Test `https://YOUR-SITE.netlify.app/healthz` and confirm it returns `{"status":"ok"}`.
 5. Create the initial platform administrator once. Set a temporary `ADMIN_SETUP_TOKEN` in Netlify environment variables and redeploy. In PowerShell, replace the URL and enter the token, name, email and a unique password (minimum 12 characters) when prompted:
 
    ```powershell
@@ -40,7 +46,7 @@ The app now has a Netlify Functions adapter. Netlify serves the frontend pages a
 
 The frontend is copied into `dist/` by the build script. The Express API, dynamic programme pages and uploaded image URLs are routed through the Netlify function in `netlify.toml`. Netlify Functions have request-size and execution limits; uploads are therefore limited to 4 MB.
 
-**Storage limitation:** Netlify Blobs is a key/value store, not a relational database. This adapter uses eventual-consistency reads because the Lambda-compatible function context does not provide the uncached endpoint required for strong-consistency reads. A recently written record or session may therefore take time to appear in another request. Simultaneous edits to the same record can also overwrite each other (last-write-wins). Treat this setup as appropriate for a low-volume pilot; for important production guest records or concurrent users, use a transactional database or a storage service with conditional writes and backups.
+**Storage limitation:** Netlify Blobs is a key/value store, not a relational database. The configured API path provides strong reads, so recently written sessions, reset tokens and programmes can be read by the next request. Simultaneous edits to the same record can still overwrite each other (last-write-wins). Treat this setup as appropriate for a low-volume pilot; for important production guest records or concurrent users, use a transactional database or a storage service with conditional writes and backups.
 
 Pushes to the connected branch can trigger future deployments. Protect guest contact information and restrict site administrator access.
 

@@ -22,7 +22,7 @@ async function loadBlobCollection(name) {
   const store = await getBlobsStore();
   const { blobs } = await store.list({ prefix });
   const items = await Promise.all(blobs.map((blob) =>
-    store.get(blob.key, { type: 'json', consistency: 'eventual' })
+    store.get(blob.key, { type: 'json', consistency: 'strong' })
   ));
   return { items: items.filter(Boolean) };
 }
@@ -37,7 +37,10 @@ async function loadRequestCollections(req, res, next) {
     requestCollections.run(collections, () => next());
   } catch (error) {
     console.error('Could not load application data from Netlify Blobs.', error);
-    res.status(503).json({ error: 'Application data is temporarily unavailable. Please try again.' });
+    const message = error.message?.startsWith('Netlify Blobs storage is not configured.')
+      ? error.message
+      : 'Application data is temporarily unavailable. Please try again.';
+    res.status(503).json({ error: message });
   }
 }
 

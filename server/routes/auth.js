@@ -94,7 +94,7 @@ router.post('/forgot-password', async (req, res) => {
     target.resetTokenExpiry = expiry;
   });
 
-  const resetLink = `${req.protocol}://${req.get('host')}/reset-password.html?token=${token}`;
+  const resetLink = `${req.protocol}://${req.get('host')}/reset-password.html?token=${encodeURIComponent(token)}`;
   res.json({ ok: true, resetLink });
 });
 

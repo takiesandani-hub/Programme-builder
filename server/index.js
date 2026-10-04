@@ -43,7 +43,21 @@ app.use(
   })
 );
 
-app.get('/healthz', (req, res) => res.status(200).json({ status: 'ok' }));
+app.get('/healthz', async (req, res) => {
+  if (isNetlify) {
+    try {
+      const store = await require('./lib/blob-store').getNetlifyStore('scanprogram-data');
+      await store.list({ prefix: '__healthcheck__/' });
+    } catch (error) {
+      console.error('Netlify application storage health check failed.', error);
+      const message = error.message?.startsWith('Netlify Blobs storage is not configured.')
+        ? error.message
+        : 'Persistent application storage is unavailable or not configured.';
+      return res.status(503).json({ status: 'error', error: message });
+    }
+  }
+  res.status(200).json({ status: 'ok' });
+});
 if (!isNetlify) app.use('/uploads', express.static(UPLOADS_DIR));
 else {
   app.get('/uploads/:ownerId/:filename', async (req, res) => {

@@ -17,7 +17,7 @@ class NetlifySessionStore extends session.Store {
 
   get(sessionId, callback) {
     this.getStore()
-      .then((store) => store.get(this.key(sessionId), { type: 'json', consistency: 'eventual' }))
+      .then((store) => store.get(this.key(sessionId), { type: 'json', consistency: 'strong' }))
       .then((data) => {
         if (data && data.expiresAt && data.expiresAt <= Date.now()) {
           return this.getStore().then((store) => store.delete(this.key(sessionId)))

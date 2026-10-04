@@ -20,6 +20,11 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (form.password.value !== form.confirmPassword.value) {
+        showMessage('Your passwords do not match. Please check and try again.', 'error');
+        form.confirmPassword.focus();
+        return;
+      }
       const submitBtn = form.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
       try {

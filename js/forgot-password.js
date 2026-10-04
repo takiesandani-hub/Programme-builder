@@ -19,11 +19,11 @@
         });
         if (result.resetLink) {
           showMessage(
-            `We found your account. In production this link would be emailed to you — for this demo, use it directly: <br><a href="${result.resetLink}">${result.resetLink}</a>`,
+            `Email delivery is not configured, so no email was sent. Open this one-time reset link within 1 hour: <br><a href="${result.resetLink}">Reset your password</a>`,
             'success'
           );
         } else {
-          showMessage('If an account exists for that email, a reset link has been generated.', 'success');
+          showMessage('If an account exists for that email, a reset link has been generated. No email will arrive because email delivery is not configured.', 'success');
         }
       } catch (err) {
         showMessage(err.message, 'error');

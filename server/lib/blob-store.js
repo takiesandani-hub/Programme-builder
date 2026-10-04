@@ -98,9 +98,22 @@ async function getNetlifyStore(name) {
     }
     return localStores.get(name);
   }
+  const siteID = process.env.NETLIFY_BLOBS_SITE_ID;
+  const token = process.env.NETLIFY_BLOBS_TOKEN;
+  if (!siteID || !token) {
+    throw new Error(
+      'Netlify Blobs storage is not configured. Set NETLIFY_BLOBS_SITE_ID and NETLIFY_BLOBS_TOKEN in the site environment.'
+    );
+  }
   netlifyBlobsModule ||= import('@netlify/blobs');
   const { getStore } = await netlifyBlobsModule;
-  return getStore(name, { consistency: 'eventual' });
+  return getStore({
+    name,
+    siteID,
+    token,
+    apiURL: process.env.NETLIFY_BLOBS_API_URL || 'https://api.netlify.com',
+    consistency: 'strong',
+  });
 }
 
 module.exports = { getNetlifyStore };
