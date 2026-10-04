@@ -40,7 +40,7 @@ The app now has a Netlify Functions adapter. Netlify serves the frontend pages a
 
 The frontend is copied into `dist/` by the build script. The Express API, dynamic programme pages and uploaded image URLs are routed through the Netlify function in `netlify.toml`. Netlify Functions have request-size and execution limits; uploads are therefore limited to 4 MB.
 
-**Storage limitation:** Netlify Blobs is a key/value store, not a relational database. This adapter stores each record separately, but simultaneous edits to the same record can still overwrite each other (Netlify Blobs uses last-write-wins). Treat this setup as appropriate for a low-volume pilot; for important production guest records or concurrent users, use a transactional database or a storage service with conditional writes and backups.
+**Storage limitation:** Netlify Blobs is a key/value store, not a relational database. This adapter uses eventual-consistency reads because the Lambda-compatible function context does not provide the uncached endpoint required for strong-consistency reads. A recently written record or session may therefore take time to appear in another request. Simultaneous edits to the same record can also overwrite each other (last-write-wins). Treat this setup as appropriate for a low-volume pilot; for important production guest records or concurrent users, use a transactional database or a storage service with conditional writes and backups.
 
 Pushes to the connected branch can trigger future deployments. Protect guest contact information and restrict site administrator access.
 

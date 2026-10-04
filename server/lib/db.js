@@ -22,7 +22,7 @@ async function loadBlobCollection(name) {
   const store = await getBlobsStore();
   const { blobs } = await store.list({ prefix });
   const items = await Promise.all(blobs.map((blob) =>
-    store.get(blob.key, { type: 'json', consistency: 'strong' })
+    store.get(blob.key, { type: 'json', consistency: 'eventual' })
   ));
   return { items: items.filter(Boolean) };
 }

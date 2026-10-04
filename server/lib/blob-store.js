@@ -100,7 +100,7 @@ async function getNetlifyStore(name) {
   }
   netlifyBlobsModule ||= import('@netlify/blobs');
   const { getStore } = await netlifyBlobsModule;
-  return getStore(name, { consistency: 'strong' });
+  return getStore(name, { consistency: 'eventual' });
 }
 
 module.exports = { getNetlifyStore };
