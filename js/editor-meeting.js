@@ -14,9 +14,10 @@
     const statusEl = document.getElementById('save-status');
     const formEl = document.querySelector('.editor-form');
     const templateSelect = document.getElementById('template');
+    statusEl.textContent = 'Syncing new programme…';
     let programme;
     try {
-      ({ programme } = await window.api.get(`/api/programmes/${encodeURIComponent(id)}`));
+      ({ programme } = await EC.loadProgramme(id));
     } catch (err) {
       window.showToast(err.message, 'error');
       window.location.href = '/dashboard.html';

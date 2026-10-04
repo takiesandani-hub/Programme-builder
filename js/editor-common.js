@@ -3,6 +3,18 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
+  async function loadProgramme(id) {
+    const delays = [250, 500, 1000, 1500, 2000];
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        return await window.api.get(`/api/programmes/${encodeURIComponent(id)}`);
+      } catch (error) {
+        if (![404, 503].includes(error.status) || attempt >= delays.length) throw error;
+        await new Promise((resolve) => setTimeout(resolve, delays[attempt]));
+      }
+    }
+  }
+
   function uid() {
     if (window.crypto && window.crypto.randomUUID) return window.crypto.randomUUID();
     return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -304,6 +316,7 @@
 
   window.EditorCommon = {
     qs,
+    loadProgramme,
     uid,
     showCoverArtwork,
     debounce,

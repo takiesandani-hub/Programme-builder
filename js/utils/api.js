@@ -14,7 +14,9 @@
     }
     if (!res.ok) {
       const message = (data && data.error) || `Something went wrong (${res.status}).`;
-      throw new Error(message);
+      const error = new Error(message);
+      error.status = res.status;
+      throw error;
     }
     return data;
   }

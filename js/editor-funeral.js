@@ -18,10 +18,11 @@
     const statusEl = document.getElementById('save-status');
     const formEl = document.querySelector('.editor-form');
     const templateSelect = document.getElementById('template');
+    statusEl.textContent = 'Syncing new programme…';
 
     let programme;
     try {
-      const result = await window.api.get(`/api/programmes/${id}`);
+      const result = await EC.loadProgramme(id);
       programme = result.programme;
     } catch (err) {
       window.showToast(err.message, 'error');
