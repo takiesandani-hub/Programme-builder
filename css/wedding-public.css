@@ -1,0 +1,68 @@
+body[data-app="wedding-public"] {
+  font-family: var(--font-body);
+  background: #fffaf6;
+  color: #33291f;
+}
+
+.w-hero {
+  text-align: center;
+  padding: var(--space-8) var(--space-5) var(--space-7);
+}
+.w-hero .heart { font-size: 30px; margin: var(--space-3) 0; }
+.w-names {
+  font-family: var(--font-heading);
+  font-size: clamp(36px, 9vw, 64px);
+  margin: 0;
+}
+.w-hero .tagline { text-transform: uppercase; letter-spacing: 3px; font-size: 13px; color: #a9906f; margin-bottom: var(--space-2); }
+.w-hero .date { font-size: 19px; margin-top: var(--space-3); }
+.w-hero .place { color: #8a7a63; }
+
+.w-section { max-width: 640px; margin: 0 auto; padding: var(--space-7) var(--space-5); border-top: 1px solid #f0e4d4; }
+.w-section h2 { font-family: var(--font-heading); font-size: 28px; text-align: center; margin-bottom: var(--space-5); }
+.w-section p { font-size: 16px; line-height: 1.7; }
+
+.w-timeline { list-style: none; margin: 0; padding: 0; }
+.w-timeline li {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px dashed #ecdfcb;
+  font-size: 16px;
+}
+.w-timeline .w-time { font-weight: 700; min-width: 70px; }
+
+.w-party-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: var(--space-5); text-align: center; }
+.w-party-grid img, .w-party-grid .placeholder {
+  width: 96px; height: 96px; border-radius: 50%; object-fit: cover; margin: 0 auto var(--space-2);
+  background: #f0e4d4;
+}
+.w-party-grid .role { color: #a9906f; font-size: 13px; }
+
+.w-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--space-3); }
+.w-gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: var(--radius-md); }
+
+.w-info-grid { display: grid; gap: var(--space-4); }
+.w-info-item { background: #fff; border: 1px solid #f0e4d4; border-radius: var(--radius-md); padding: var(--space-4); }
+.w-info-item h4 { margin: 0 0 4px; font-size: 15px; }
+.w-info-item p { margin: 0; color: #6c5c48; font-size: 14px; }
+.w-info-item a { color: #a9603f; }
+
+.w-footer { text-align: center; padding: var(--space-7) var(--space-5); color: #a9906f; font-size: 13px; }
+.w-footer .btn { margin: var(--space-2); }
+
+.w-notfound, .w-loading { text-align: center; padding: var(--space-8) var(--space-5); }
+
+/* Template variants */
+body[data-template="modern"] { background: #faf9f7; color: #1f2430; }
+body[data-template="modern"] .w-hero { background: #1f2430; color: #fff; }
+body[data-template="modern"] .w-hero .place, body[data-template="modern"] .w-hero .tagline { color: #b9b4c9; }
+body[data-template="modern"] .w-names { font-family: var(--font-body); font-weight: 700; letter-spacing: -1px; }
+body[data-template="modern"] .w-section { border-top-color: var(--color-border); }
+body[data-template="modern"] .w-timeline li { border-bottom-color: var(--color-border); }
+body[data-template="modern"] .w-party-grid img, body[data-template="modern"] .w-party-grid .placeholder { background: var(--color-primary-light); }
+body[data-template="modern"] .w-info-item { background: var(--color-surface); border-color: var(--color-border); }
+
+body[data-template="romantic"] .w-hero { background: linear-gradient(180deg, #fff0f3, #fffaf6); }
+body[data-template="romantic"] .w-names { color: #b3486a; }
+body[data-template="romantic"] .heart { color: #d9648a; }

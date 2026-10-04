@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Restaurant Menu — ScanProgram</title>
+<link rel="stylesheet" href="/css/variables.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/editor.css">
+</head>
+<body>
+
+<header class="editor-header">
+  <div class="container">
+    <a href="/dashboard.html" class="back-link">← Back to Dashboard</a>
+    <div class="save-status" id="save-status">Loading…</div>
+    <div class="editor-header-actions">
+      <a href="#" class="btn btn-secondary mobile-preview-btn" id="mobile-preview-btn" target="_blank">Preview</a>
+      <button type="button" class="btn btn-primary" id="publish-btn" disabled>Publish Programme</button>
+    </div>
+  </div>
+</header>
+
+<main class="container editor-layout">
+  <div class="editor-form">
+    <h1>🍽️ Restaurant Menu</h1>
+
+    <section class="editor-form-section">
+      <h2>Restaurant Details</h2>
+      <div class="field">
+        <label for="name">Restaurant Name</label>
+        <input type="text" id="name" data-field="name">
+      </div>
+      <div class="field">
+        <label>Logo</label>
+        <div class="image-field" data-image-field="logo">
+          <img class="image-preview" id="logo-preview" style="display:none;">
+          <input type="file" accept="image/*" data-image-input>
+          <input type="hidden" id="logo" data-field="logo">
+        </div>
+      </div>
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" data-field="description" rows="3"></textarea>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="contact">Contact Number</label>
+          <input type="text" id="contact" data-field="contact">
+        </div>
+        <div class="field">
+          <label for="location">Location / Address</label>
+          <input type="text" id="location" data-field="location">
+        </div>
+      </div>
+      <div class="field">
+        <label for="mapUrl">Map Link</label>
+        <input type="url" id="mapUrl" data-field="mapUrl" placeholder="https://maps.google.com/...">
+      </div>
+      <div class="field">
+        <label for="template">Template</label>
+        <select id="template">
+          <option value="modern">Modern</option>
+          <option value="elegant">Elegant</option>
+          <option value="simple">Simple</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="editor-form-section">
+      <h2>Opening Hours</h2>
+      <div class="list-items" id="hours-list"></div>
+      <button type="button" class="btn btn-secondary btn-sm" id="add-hours-item">+ Add Hours</button>
+    </section>
+
+    <section class="editor-form-section">
+      <h2>Menu</h2>
+      <p class="section-desc">Organise your menu into categories, then add items to each.</p>
+      <div class="list-items" id="categories-list"></div>
+      <button type="button" class="btn btn-secondary btn-sm" id="add-category">+ Add Category</button>
+    </section>
+  </div>
+
+  <aside class="editor-preview-pane">
+    <div class="phone-frame">
+      <iframe id="preview-frame" title="Live preview"></iframe>
+    </div>
+  </aside>
+</main>
+
+<script src="/js/utils/api.js"></script>
+<script src="/js/utils/toast.js"></script>
+<script src="/js/utils/guard.js"></script>
+<script src="/js/editor-common.js"></script>
+<script src="/js/editor-restaurant.js"></script>
+</body>
+</html>

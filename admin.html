@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — ScanProgram</title>
+<link rel="stylesheet" href="/css/variables.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="/dashboard.html" class="brand">📱 ScanProgram <span style="font-size:13px; color:var(--color-text-muted); font-family: var(--font-body);">Admin</span></a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="/dashboard.html">My Dashboard</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" data-logout>Log Out</button>
+    </div>
+    <button class="nav-toggle" data-nav-toggle aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<main class="page-with-nav">
+  <div class="container">
+    <h1>Admin Dashboard</h1>
+    <div id="loading" class="spinner"></div>
+
+    <div id="admin-content" style="display:none;">
+      <div class="admin-stats" id="stats-grid"></div>
+
+      <h2>Programmes</h2>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Owner</th>
+              <th>Status</th>
+              <th>Views</th>
+              <th>Scans</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="programmes-body"></tbody>
+        </table>
+      </div>
+
+      <div class="guest-scan-heading">
+        <div>
+          <h2>QR guest registrations</h2>
+          <p>Names and phone numbers are restricted to this admin view. Programme owners cannot access these records.</p>
+        </div>
+        <button type="button" class="btn btn-secondary" id="download-guest-scans">Download CSV</button>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Programme client</th>
+              <th>Guest</th>
+              <th>Phone</th>
+              <th>Scanned</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="guest-scans-body"></tbody>
+        </table>
+        <p id="guest-scans-empty" class="admin-empty" hidden>No QR guest registrations yet.</p>
+      </div>
+
+      <h2>Users</h2>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="/js/utils/api.js"></script>
+<script src="/js/utils/toast.js"></script>
+<script src="/js/utils/modal.js"></script>
+<script src="/js/utils/guard.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

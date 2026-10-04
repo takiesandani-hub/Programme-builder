@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create New Programme — ScanProgram</title>
+<link rel="stylesheet" href="/css/variables.css">
+<link rel="stylesheet" href="/css/main.css">
+<style>
+  .type-card {
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-7) var(--space-5);
+    text-align: center;
+    cursor: pointer;
+    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  }
+  .type-card:hover { border-color: var(--color-primary); transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .type-card:focus-visible { outline:3px solid #a9874c; outline-offset:3px; }
+  .type-card .emoji { font-size: 56px; margin-bottom: var(--space-4); }
+  .type-card h3 { margin-bottom: var(--space-2); }
+  .type-card p { color: var(--color-text-muted); margin: 0; }
+  .type-card[aria-pressed="true"] { border-color: #a9874c; box-shadow: 0 0 0 3px #a9874c22; }
+  .create-step { max-width: 900px; margin: 56px auto 32px; }
+  .create-step[hidden] { display:none; }
+  .mode-choice { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .mode-card { position:relative; display:flex; align-items:flex-start; gap:17px; width:100%; min-height:148px; padding:22px; border:1px solid var(--color-border); background:var(--color-surface); color:var(--color-text); text-align:left; cursor:pointer; transition:transform var(--transition),border-color var(--transition),box-shadow var(--transition),background var(--transition); }
+  .mode-card:hover { transform:translateY(-2px); border-color:#a9874c; box-shadow:var(--shadow-md); }
+  .mode-card:focus-visible { outline:3px solid #a9874c; outline-offset:3px; }
+  .mode-card:active { transform:translateY(0); }
+  .mode-card:disabled { opacity:.65; cursor:wait; transform:none; }
+  .mode-card strong { display:block; font:500 21px var(--font-heading); margin:0 0 7px; }
+  .mode-card .mode-copy { display:block; color:var(--color-text-muted); font-size:14px; line-height:1.6; }
+  .mode-card .mode-icon { flex:0 0 42px; display:grid; place-items:center; width:42px; height:42px; border:1px solid #e5ddcd; background:#fff; color:#826637; font-size:21px; line-height:1; }
+  .mode-card-recommended { grid-column:1 / -1; min-height:174px; border-color:#d8c9a9; background:#f6f2e9; }
+  .mode-card-recommended::before { position:absolute; inset:0 auto 0 0; width:4px; background:#a9874c; content:""; }
+  .mode-card-recommended .mode-icon { background:#eee6d6; border-color:#e4d8c0; }
+  .mode-card-content { flex:1; min-width:0; }
+  .mode-label { display:inline-flex; align-items:center; gap:6px; margin-bottom:9px; color:#73592e; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+  .mode-label::before { width:6px; height:6px; border-radius:50%; background:#a9874c; content:""; }
+  .mode-action { display:inline-flex; align-items:center; gap:8px; margin-top:14px; color:#5c4724; font-size:13px; font-weight:700; }
+  .mode-action::after { content:"→"; transition:transform var(--transition); }
+  .mode-card:hover .mode-action::after { transform:translateX(3px); }
+  .mode-alternatives { display:grid; grid-template-columns:1fr 1fr; grid-column:1 / -1; gap:14px; }
+  .mode-alternatives .mode-card { min-height:142px; }
+  .create-step .section-heading { margin-bottom:22px; }
+  .create-step .section-heading h2 { margin-bottom:8px; }
+  .step-kicker { color:#826637; font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+  #upload-step { padding:25px; background:var(--color-surface); border:1px solid var(--color-border); }
+  #artwork-file { display:block; margin:15px 0; max-width:100%; }
+  #flow-error { color:#b42318; min-height:24px; }
+  @media(max-width:650px) {
+    .create-step { margin-top:40px; }
+    .mode-choice,.mode-alternatives { grid-template-columns:1fr; }
+    .mode-card-recommended,.mode-alternatives { grid-column:auto; }
+    .mode-card { min-height:0; padding:19px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="/index.html" class="brand">📱 ScanProgram</a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" data-logout>Log Out</button>
+    </div>
+    <button class="nav-toggle" data-nav-toggle aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<main class="page-with-nav">
+  <div class="container">
+    <div class="section-heading">
+      <h1>What would you like to create?</h1>
+      <p>Choose the occasion first. Then build a responsive programme—or add optional cover artwork.</p>
+    </div>
+    <div class="card-grid" id="type-grid">
+      <div class="type-card" data-type="wedding">
+        <div class="emoji">💍</div>
+        <h3>Wedding</h3>
+        <p>Create a digital wedding programme.</p>
+      </div>
+      <div class="type-card" data-type="funeral">
+        <div class="emoji">🕊️</div>
+        <h3>Funeral</h3>
+        <p>Create a digital memorial programme.</p>
+      </div>
+      <div class="type-card" data-type="restaurant">
+        <div class="emoji">🍽️</div>
+        <h3>Restaurant</h3>
+        <p>Create a digital restaurant menu.</p>
+      </div>
+      <div class="type-card" data-type="meeting" role="button" tabindex="0" aria-pressed="false">
+        <div class="emoji">🎙️</div>
+        <h3>Meeting or Conference</h3>
+        <p>Build a clear agenda with sessions, speakers and event details.</p>
+      </div>
+    </div>
+
+    <section id="mode-step" class="create-step" hidden aria-labelledby="mode-heading">
+      <div class="section-heading">
+        <span class="step-kicker">Next · Choose your starting point</span>
+        <h2 id="mode-heading">Design the programme first, or add a cover</h2>
+        <p>Your event details and mobile-friendly programme layout are separate from optional cover artwork.</p>
+      </div>
+      <div class="mode-choice">
+        <button type="button" class="mode-card mode-card-recommended" data-mode="programme">
+          <span class="mode-icon" aria-hidden="true">▤</span>
+          <span class="mode-card-content">
+            <span class="mode-label">Recommended · No cover image needed</span>
+            <strong>Build a digital programme</strong>
+            <span class="mode-copy">Start with a polished, mobile-friendly programme layout. Add event details and choose its style next.</span>
+            <span class="mode-action">Go to the programme editor</span>
+          </span>
+        </button>
+        <div class="mode-alternatives" role="group" aria-label="Optional cover artwork">
+          <button type="button" class="mode-card" data-mode="design">
+            <span class="mode-icon" aria-hidden="true">✳</span>
+            <span class="mode-card-content">
+              <strong>Design a custom cover</strong>
+              <span class="mode-copy">Create optional Atelier artwork for the cover of your separate responsive programme page.</span>
+            </span>
+          </button>
+          <button type="button" class="mode-card" data-mode="upload">
+            <span class="mode-icon" aria-hidden="true">↥</span>
+            <span class="mode-card-content">
+              <strong>Upload finished artwork</strong>
+              <span class="mode-copy">Add your own JPEG, PNG, WEBP or GIF as the cover, then continue to the programme editor.</span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+    <p id="flow-error" role="alert" aria-live="polite"></p>
+
+    <section id="upload-step" class="create-step" hidden aria-labelledby="upload-heading">
+      <h2 id="upload-heading">Choose your programme artwork</h2>
+      <p>Use an image up to 8 MB. Your image will be uploaded to your signed-in programme workspace.</p>
+      <label for="artwork-file">Programme cover image</label>
+      <input id="artwork-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+      <button type="button" class="btn btn-primary" id="upload-continue">Upload & continue</button>
+      <button type="button" class="btn btn-ghost" id="back-to-options">Back</button>
+    </div>
+  </div>
+</main>
+
+<script src="/js/utils/api.js"></script>
+<script src="/js/utils/toast.js"></script>
+<script src="/js/utils/guard.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/create.js"></script>
+</body>
+</html>

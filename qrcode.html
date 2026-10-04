@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your QR Code — ScanProgram</title>
+<link rel="stylesheet" href="/css/variables.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/qrcode.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="/dashboard.html" class="brand">📱 ScanProgram</a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" data-logout>Log Out</button>
+    </div>
+    <button class="nav-toggle" data-nav-toggle aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<main class="page-with-nav">
+  <div class="container qr-page">
+    <div id="loading" class="spinner"></div>
+    <div id="qr-content" style="display:none;">
+      <h1>Your QR Code</h1>
+      <p id="programme-title" class="subtitle"></p>
+
+      <div class="qr-card">
+        <img id="qr-image" alt="QR code" class="qr-image">
+        <p>Scan this code to view your programme</p>
+        <div class="publish-link-box" id="public-link"></div>
+      </div>
+
+      <div class="qr-actions">
+        <a class="btn btn-primary" id="download-qr" download>⬇️ Download QR Code</a>
+        <button type="button" class="btn btn-secondary" id="download-poster">🖼️ Download Poster</button>
+        <button type="button" class="btn btn-secondary" id="copy-link">🔗 Copy Link</button>
+        <a class="btn btn-secondary" id="whatsapp-share" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <button type="button" class="btn btn-secondary" id="native-share" style="display:none;">📤 Share</button>
+      </div>
+
+      <div id="not-published" class="form-error" style="display:none; margin-top: var(--space-5);">
+        This programme isn't published yet — guests won't be able to view it until you publish. The QR code will keep working once you do.
+      </div>
+    </div>
+  </div>
+</main>
+
+<canvas id="poster-canvas" width="1000" height="1400" style="display:none;"></canvas>
+
+<script src="/js/utils/api.js"></script>
+<script src="/js/utils/toast.js"></script>
+<script src="/js/utils/guard.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/qrcode-page.js"></script>
+</body>
+</html>

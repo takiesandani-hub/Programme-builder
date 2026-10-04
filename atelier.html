@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f1e9">
+  <meta name="description" content="Design elegant wedding, memorial and event programmes in your browser.">
+  <title>Atelier — Programme Studio</title>
+  <link rel="stylesheet" href="./css/studio.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./index.html" aria-label="Atelier home"><span class="brand-mark">A</span><span>ATELIER<small>PROGRAMME STUDIO</small></span></a>
+    <div class="document-name">
+      <input id="project-name" aria-label="Programme name" maxlength="70" value="Amara & Niko — Wedding">
+      <span class="save-state" id="save-state">Saved on this device</span>
+    </div>
+    <div class="top-actions">
+      <button class="quiet-button" id="new-project" type="button">+ New</button>
+      <button class="quiet-button" id="backup-project" type="button">Backup</button>
+      <button class="quiet-button" id="restore-project" type="button">Open backup</button>
+      <button class="button button-dark workflow-button" id="use-design" type="button" hidden>Use cover &amp; continue</button>
+      <button class="button button-dark" id="export-png" type="button"><span aria-hidden="true">↓</span> Export PNG</button>
+      <input id="backup-file" type="file" accept="application/json,.json" hidden>
+    </div>
+  </header>
+
+  <main class="studio">
+    <aside class="left-panel" aria-label="Design tools">
+      <div class="panel-heading"><span>YOUR DESIGN</span><span class="tiny-label">01 / 03</span></div>
+      <div class="section-block sample-block">
+        <label class="field-label" for="template-select">Start with a sample</label>
+        <select id="template-select">
+          <option value="noir">Noir & Gold Wedding</option>
+          <option value="ivory">Ivory Garden Wedding</option>
+          <option value="modern">Modern Editorial</option>
+          <option value="memorial">Everlasting Memorial</option>
+          <option value="botanical">Botanical Tribute</option>
+          <option value="bistro">The Bistro Menu</option>
+          <option value="soir">Midnight Soiree</option>
+        </select>
+        <p class="helper">Each sample includes a cover and an inside page. Your edits stay yours.</p>
+      </div>
+      <div class="section-block pages-block">
+        <div class="section-title"><span>Pages</span><span id="page-count">2 pages</span></div>
+        <div class="page-tabs" role="tablist" aria-label="Programme pages">
+          <button class="page-tab active" data-page="0" role="tab" aria-selected="true">01 <span>Cover</span></button>
+          <button class="page-tab" data-page="1" role="tab" aria-selected="false">02 <span>Inside</span></button>
+        </div>
+      </div>
+      <div class="section-block elements-block">
+        <div class="section-title"><span>Elements</span><span>EDITABLE</span></div>
+        <button class="tool-button" id="add-text" type="button"><span class="tool-icon">T</span><span><b>Add a text box</b><small>Headings, details, anything</small></span><span class="plus">+</span></button>
+        <label class="tool-button upload-button" for="image-upload"><span class="tool-icon image-icon">▧</span><span><b>Use my own design</b><small>Upload a programme image</small></span><span class="plus">↑</span></label>
+        <input id="image-upload" type="file" accept="image/*" hidden>
+      </div>
+      <div class="section-block recent-block">
+        <div class="section-title"><span>Recent designs</span><span>ON THIS DEVICE</span></div>
+        <div id="recent-list" class="recent-list"></div>
+      </div>
+      <div class="left-footer"><span class="lock">◇</span><span><b>Private by design</b><small>Saved only in this browser</small></span></div>
+    </aside>
+
+    <section class="work-area" aria-label="Programme canvas">
+      <div class="canvas-toolbar">
+        <div class="canvas-location"><span class="crumb-muted">Your designs</span><span class="crumb-slash">/</span><b id="canvas-title">Wedding programme</b></div>
+        <div class="canvas-controls">
+          <span class="page-indicator" id="page-indicator">COVER</span>
+          <button type="button" id="zoom-out" aria-label="Zoom out">−</button><span id="zoom-value">100%</span><button type="button" id="zoom-in" aria-label="Zoom in">+</button>
+          <button type="button" id="zoom-fit" class="fit-button">Fit</button>
+        </div>
+      </div>
+      <div class="canvas-stage" id="canvas-stage">
+        <div class="paper-shell" id="paper-shell">
+          <canvas id="design-canvas" width="840" height="1188" aria-label="Programme page. Click a text item to select it, or drag it to reposition."></canvas>
+          <div class="canvas-selection" id="selection-box" hidden><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="canvas-foot">
+        <span><i class="tip-dot"></i> Select an element to edit it · drag to reposition</span>
+        <span><span id="element-count">0</span> elements <b>·</b> <span id="dimensions">148 × 210 mm</span></span>
+      </div>
+    </section>
+
+    <aside class="right-panel" aria-label="Selected element properties">
+      <div class="panel-heading"><span>PROPERTIES</span><span class="tiny-label" id="selected-kind">PAGE</span></div>
+      <div id="page-properties">
+        <div class="section-block">
+          <p class="inspector-title">Page finish</p>
+          <p class="helper inspector-intro">Set the tone for this page. Select a text element on the canvas for detailed controls.</p>
+          <label class="field-label" for="background-color">Background colour</label>
+          <div class="color-field"><input id="background-color" type="color" value="#171719"><input id="background-hex" value="#171719" aria-label="Background hex colour" maxlength="7"></div>
+          <label class="field-label spaced" for="accent-color">Accent colour</label>
+          <div class="color-field"><input id="accent-color" type="color" value="#d5ae52"><input id="accent-hex" value="#d5ae52" aria-label="Accent hex colour" maxlength="7"></div>
+          <label class="check-row"><input id="texture-toggle" type="checkbox" checked><span>Subtle diamond texture</span></label>
+          <button class="clear-image-button" id="clear-image" type="button" hidden>Remove uploaded artwork</button>
+        </div>
+        <div class="section-block page-hint">
+          <span class="hint-star">✳</span>
+          <p><b>Make it yours</b><br>Every sample is a starting point. Change any text, colour or position — or place your own artwork underneath.</p>
+        </div>
+      </div>
+      <div id="element-properties" hidden>
+        <div class="section-block">
+          <label class="field-label" for="element-text">Text content</label>
+          <textarea id="element-text" rows="4" maxlength="500"></textarea>
+          <label class="field-label spaced" for="font-family">Font style</label>
+          <select id="font-family">
+            <option value="serif">Classic serif</option>
+            <option value="script">Elegant script</option>
+            <option value="sans">Modern sans</option>
+            <option value="display">Editorial display</option>
+            <option value="mono">Typewriter</option>
+          </select>
+          <div class="two-fields spaced">
+            <div><label class="field-label" for="font-size">Size</label><div class="unit-input"><input id="font-size" type="number" min="8" max="72" step="1"><span>pt</span></div></div>
+            <div><label class="field-label" for="text-align">Alignment</label><select id="text-align"><option value="center">Center</option><option value="left">Left</option><option value="right">Right</option></select></div>
+          </div>
+          <div class="text-style-row">
+            <button id="bold-toggle" type="button" aria-label="Toggle bold" aria-pressed="false"><b>B</b></button>
+            <button id="italic-toggle" type="button" aria-label="Toggle italic" aria-pressed="false"><i>I</i></button>
+            <label class="field-label inline-label" for="text-color">Text colour</label><input id="text-color" type="color" value="#d5ae52" aria-label="Text colour">
+          </div>
+        </div>
+        <div class="section-block">
+          <p class="section-title position-title">Position & size <span>MM</span></p>
+          <div class="two-fields">
+            <div><label class="field-label" for="pos-x">Horizontal</label><input class="number-field" id="pos-x" type="number" min="0" max="148" step="1"></div>
+            <div><label class="field-label" for="pos-y">Vertical</label><input class="number-field" id="pos-y" type="number" min="0" max="210" step="1"></div>
+          </div>
+          <div class="two-fields spaced">
+            <div><label class="field-label" for="box-width">Width</label><input class="number-field" id="box-width" type="number" min="12" max="148" step="1"></div>
+            <div><label class="field-label" for="line-spacing">Line spacing</label><input class="number-field" id="line-spacing" type="number" min="0.8" max="2.5" step="0.1"></div>
+          </div>
+        </div>
+        <div class="element-actions">
+          <button id="duplicate-element" type="button">Duplicate</button>
+          <button id="delete-element" type="button" class="delete-button">Delete element</button>
+        </div>
+      </div>
+      <div class="right-footer"><span id="studio-footer-label">Atelier studio</span><span id="studio-footer-mode">NO ACCOUNT NEEDED</span></div>
+    </aside>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./js/utils/api.js"></script>
+  <script src="./js/studio.js"></script>
+</body>
+</html>

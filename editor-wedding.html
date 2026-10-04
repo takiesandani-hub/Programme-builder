@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Wedding Programme — ScanProgram</title>
+<link rel="stylesheet" href="/css/variables.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/editor.css">
+</head>
+<body>
+
+<header class="editor-header">
+  <div class="container">
+    <a href="/dashboard.html" class="back-link">← Back to Dashboard</a>
+    <div class="save-status" id="save-status">Loading…</div>
+    <div class="editor-header-actions">
+      <a href="#" class="btn btn-secondary mobile-preview-btn" id="mobile-preview-btn" target="_blank">Preview</a>
+      <button type="button" class="btn btn-primary" id="publish-btn" disabled>Publish Programme</button>
+    </div>
+  </div>
+</header>
+
+<main class="container editor-layout">
+  <div class="editor-form">
+    <h1>💍 Wedding Programme</h1>
+
+    <section class="editor-form-section">
+      <h2>Basic Information</h2>
+      <p class="section-desc">Tell us about the happy couple.</p>
+      <div class="field-row">
+        <div class="field">
+          <label for="brideName">Bride's Name</label>
+          <input type="text" id="brideName" data-field="brideName">
+        </div>
+        <div class="field">
+          <label for="groomName">Groom's Name</label>
+          <input type="text" id="groomName" data-field="groomName">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="date">Wedding Date</label>
+          <input type="date" id="date" data-field="date">
+        </div>
+        <div class="field">
+          <label for="time">Wedding Time</label>
+          <input type="time" id="time" data-field="time">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="venue">Venue</label>
+          <input type="text" id="venue" data-field="venue" placeholder="e.g. The Oyster Box Hotel">
+        </div>
+        <div class="field">
+          <label for="city">City</label>
+          <input type="text" id="city" data-field="city">
+        </div>
+      </div>
+      <div class="field">
+        <label for="address">Address</label>
+        <input type="text" id="address" data-field="address">
+      </div>
+      <div class="field">
+        <label for="mapUrl">Map Link</label>
+        <input type="url" id="mapUrl" data-field="mapUrl" placeholder="https://maps.google.com/...">
+      </div>
+      <div class="field">
+        <label for="welcomeMessage">Welcome Message</label>
+        <textarea id="welcomeMessage" data-field="welcomeMessage" placeholder="A short welcome to your guests"></textarea>
+      </div>
+      <div class="field">
+        <label for="template">Template</label>
+        <select id="template">
+          <option value="elegant">Elegant</option>
+          <option value="modern">Modern</option>
+          <option value="romantic">Romantic</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="editor-form-section">
+      <h2>Wedding Schedule</h2>
+      <p class="section-desc">Add the order of events for the day.</p>
+      <div class="list-items" id="schedule-list"></div>
+      <button type="button" class="btn btn-secondary btn-sm" id="add-schedule-item">+ Add Event</button>
+    </section>
+
+    <section class="editor-form-section">
+      <h2>Wedding Party</h2>
+      <p class="section-desc">Maid of honour, bridesmaids, best man, groomsmen, parents and other important people.</p>
+      <div class="list-items" id="party-list"></div>
+      <button type="button" class="btn btn-secondary btn-sm" id="add-party-item">+ Add Person</button>
+    </section>
+
+    <section class="editor-form-section">
+      <h2>Our Story</h2>
+      <p class="section-desc">Share how you met and fell in love.</p>
+      <div class="field">
+        <textarea id="story" data-field="story" rows="6" placeholder="Once upon a time…"></textarea>
+      </div>
+    </section>
+
+    <section class="editor-form-section">
+      <h2>Gallery</h2>
+      <p class="section-desc">Upload your favourite photos of the two of you.</p>
+      <div class="gallery-grid" id="gallery-grid"></div>
+      <label class="gallery-upload-label">
+        📷 Upload Photos
+        <input type="file" id="gallery-upload" accept="image/*" multiple>
+      </label>
+    </section>
+  </div>
+
+  <aside class="editor-preview-pane">
+    <div class="phone-frame">
+      <iframe id="preview-frame" title="Live preview"></iframe>
+    </div>
+  </aside>
+</main>
+
+<script src="/js/utils/api.js"></script>
+<script src="/js/utils/toast.js"></script>
+<script src="/js/utils/guard.js"></script>
+<script src="/js/editor-common.js"></script>
+<script src="/js/editor-wedding.js"></script>
+</body>
+</html>

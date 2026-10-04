@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up — ScanProgram</title>
+<link rel="stylesheet" href="/css/variables.css">
+<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+<div class="auth-shell">
+  <div class="form-card">
+    <a href="/index.html" class="brand" style="margin-bottom: var(--space-5); display:inline-flex;">📱 ScanProgram</a>
+    <h1>Create your account</h1>
+    <p class="subtitle">Start building your digital programme in minutes.</p>
+
+    <div id="form-message"></div>
+
+    <form id="signup-form">
+      <div class="field">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required minlength="6" autocomplete="new-password">
+        <div class="hint">At least 6 characters.</div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+    </form>
+
+    <p class="form-footer-link">Already have an account? <a href="/login.html">Log in</a></p>
+  </div>
+</div>
+
+<script src="/js/utils/api.js"></script>
+<script src="/js/auth.js"></script>
+</body>
+</html>
