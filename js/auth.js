@@ -30,12 +30,19 @@
       signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = signupForm.querySelector('button[type="submit"]');
+        const password = signupForm.password.value;
+        const confirmPassword = signupForm.confirmPassword.value;
+        if (password !== confirmPassword) {
+          showMessage('Your passwords do not match. Please check and try again.', 'error');
+          signupForm.confirmPassword.focus();
+          return;
+        }
         submitBtn.disabled = true;
         try {
           await window.api.post('/api/auth/signup', {
             name: signupForm.name.value.trim(),
             email: signupForm.email.value.trim(),
-            password: signupForm.password.value,
+            password,
           });
           window.location.href = '/dashboard.html';
         } catch (err) {
